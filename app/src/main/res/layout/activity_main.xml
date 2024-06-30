@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".MainActivity"
+tools:visibility="visible"
+android:orientation="vertical"
+android:background="#000000" >
+
+        <Button
+            android:id="@+id/pickOriginalFile"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/pick_file" />
+
+        <TextView
+            android:id="@+id/errorField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="#673AB7"
+            android:textIsSelectable="true"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/launchSystemFiles"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/launch" />
+
+        <TextView
+            android:id="@+id/launchInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textColor="#673AB7"
+            android:text="@string/launch_info"
+            android:textIsSelectable="true" />
+
+</LinearLayout>
