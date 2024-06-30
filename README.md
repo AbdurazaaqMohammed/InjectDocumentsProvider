@@ -43,6 +43,7 @@ Open the APK as a ZIP archive and add the update manifest. Download the [classes
 (If there are 5 classes.dex files in the APK, rename it to classes6.dex)
 
 After installing the patched APK, launching the system Files app and opening the sidebar, you should see the name of the app you patched.
+
 ![image](https://github.com/AbdurazaaqMohammed/InjectDocumentsProvider/assets/56937889/ab61129d-67ba-484c-aae8-686c9afc4646)
 
 <br />
