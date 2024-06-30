@@ -24,7 +24,20 @@ The Smali class (and decompiled Java) written by Lin Jin Bin can be seen [here](
 
 You could also patch the apk yourself by using [axml2xml](https://github.com/codyi96/xml2axml) or [apktool](https://github.com/iBotPeaches/Apktool) to decompile and recompile AndroidManifest.xml to add the following text at the bottom of the file before the </application> closing tag.
 
-```<provider\nandroid:name="bin.mt.file.content.MTDataFilesProvider"\nandroid:permission="android.permission.MANAGE_DOCUMENTS"\nandroid:exported="true"\nandroid:authorities="com.andatsoft.myapk.fwa.MTDataFilesProvider"\nandroid:grantUriPermissions="true">\n<intent-filter>\n<action\nandroid:name="android.content.action.DOCUMENTS_PROVIDER"/>\n</intent-filter>\n</provider>```
+```xml
+<provider
+android:name="bin.mt.file.content.MTDataFilesProvider"
+android:permission="android.permission.MANAGE_DOCUMENTS"
+android:exported="true"
+android:authorities="com.andatsoft.myapk.fwa.MTDataFilesProvider"
+android:grantUriPermissions="true">
+<intent-filter>
+<action
+android:name="android.content.action.DOCUMENTS_PROVIDER"/>
+</intent-filter>
+</provider>
+```
+
 
 Open the APK as a ZIP archive and add the update manifest. Download the [classes.dex file](https://github.com/AbdurazaaqMohammed/InjectDocumentsProvider/raw/main/app/src/main/assets/a.dex) from here and rename it to "classesN.dex" where N is the count of existing classes.dex + 1. 
 (If there are 5 classes.dex files in the APK, rename it to classes6.dex)
