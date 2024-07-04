@@ -3,9 +3,9 @@ package com.AbdurazaaqMohammed.InjectDocumentsProvider;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -13,6 +13,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.OpenableColumns;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +26,7 @@ import com.github.angads25.filepicker.view.FilePickerDialog;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -31,6 +34,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.lang.ref.WeakReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -41,6 +45,7 @@ public class MainActivity extends Activity {
     private static final int REQUEST_CODE_SAVE_FILE = 2;
     private static Uri uriOfFileToBePatched;
     private final static boolean supportsInbuiltAndroidFilePicker = Build.VERSION.SDK_INT > 18;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +60,9 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         findViewById(R.id.pickOriginalFile).setOnClickListener(view -> openFilePickerToSelectFile());
         findViewById(R.id.launchSystemFiles).setOnClickListener(view -> openSystemFilesActivity());
+        TextView textView = findViewById(R.id.launchInfo);
+        textView.setText(Html.fromHtml(getString(R.string.launch_info)));
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
 
         // Check if user shared files with the app
         final Intent fromShareOrView = getIntent();
@@ -106,12 +114,32 @@ public class MainActivity extends Activity {
 
     public void openSystemFilesActivity() {
         Intent intent = new Intent();
-        intent.setClassName("com.google.android.documentsui", "com.android.documentsui.files.FilesActivity");
 
-        PackageManager packageManager = getPackageManager();
-        if (intent.resolveActivity(packageManager) != null) {
-            startActivity(intent);
-        } else {
+        final String newFilesPackageName = "com.google.android.documentsui";
+        final String oldFilesPackageName = "com.android.documentsui";
+        final String one = "com.android.documentsui.files.FilesActivity";
+        final String two = "com.android.documentsui.LauncherActivity";
+        final String[][] possibleActivities = {
+                {newFilesPackageName, one},
+                {oldFilesPackageName, one},
+                {newFilesPackageName, two},
+                {oldFilesPackageName, two}
+        };
+
+        boolean activityStarted = false;
+
+        for (String[] activity : possibleActivities) {
+            intent.setClassName(activity[0], activity[1]);
+            try {
+                startActivity(intent);
+                activityStarted = true;
+                break; // Exit the loop if the activity starts successfully
+            } catch (ActivityNotFoundException ignored) {
+                // Ignore and try the next activity in the list
+            }
+        }
+
+        if (!activityStarted) {
             showError("System Files app not found");
         }
     }
@@ -229,8 +257,26 @@ public class MainActivity extends Activity {
                     outputFileStream = new FileOutputStream(fileToPatch.replace(".apk", "_documents-provider.apk"));
                     am = new com.apk.axml.aXMLDecoder().decode(getAndroidManifestInputStreamFromZip(new FileInputStream(fileToPatch)));
                 }
-
-                final byte[] encodedData = new com.apk.axml.aXMLEncoder().encodeString(activity, am.replace("</application>", "<provider\nandroid:name=\"bin.mt.file.content.MTDataFilesProvider\"\nandroid:permission=\"android.permission.MANAGE_DOCUMENTS\"\nandroid:exported=\"true\"\nandroid:authorities=\"com.andatsoft.myapk.fwa.MTDataFilesProvider\"\nandroid:grantUriPermissions=\"true\">\n<intent-filter>\n<action\nandroid:name=\"android.content.action.DOCUMENTS_PROVIDER\"/>\n</intent-filter>\n</provider>\n</application>"));
+                BufferedReader reader = new BufferedReader(new StringReader(am));
+                String line;
+                String packageName = "com.andatsoft.myapk.fwa";
+                try {
+                    while ((line = reader.readLine()) != null) {
+                        if(line.contains("package=\"")) {
+                            packageName = line.split("\"")[1];
+                            break;
+                        }
+                    }
+                } catch (IOException e) {
+                    activity.showError(e);
+                } finally {
+                    try {
+                        reader.close();
+                    } catch (IOException e) {
+                        activity.showError(e);
+                    }
+                }
+                final byte[] encodedData = new com.apk.axml.aXMLEncoder().encodeString(activity, am.replace("</application>", "<provider\nandroid:name=\"bin.mt.file.content.MTDataFilesProvider\"\nandroid:permission=\"android.permission.MANAGE_DOCUMENTS\"\nandroid:exported=\"true\"\nandroid:authorities=\"" + packageName + ".MTDataFilesProvider\"\nandroid:grantUriPermissions=\"true\">\n<intent-filter>\n<action\nandroid:name=\"android.content.action.DOCUMENTS_PROVIDER\"/>\n</intent-filter>\n</provider>\n</application>"));
                 try (ZipInputStream zis = new ZipInputStream(toPatchFileStream);
                      ZipOutputStream zos = new ZipOutputStream(outputFileStream)) {
                     // This doesn't work on split APKs and no point making it work till it can sign as all apks in the split APK need to be signed
@@ -279,6 +325,5 @@ public class MainActivity extends Activity {
             }
             return null;
         }
-
     }
 }
