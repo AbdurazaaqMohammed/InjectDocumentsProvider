@@ -10,5 +10,5 @@
     <string name="error_dir_access">Directory cannot be accessed</string>
     <string name="label_parent_dir" translatable="false">...</string>
     <string name="launch">Launch</string>
-    <string name="launch_info">Launch the system Files app (com.google.android.documentsui). This Files app is needed to access the patched app\'s files. Some phone manufacturers (like Xiaomi) hide this app from the launcher to promote their own file manager apps. After installing the patched app, open the system Files app, open the sidebar and you will see the app name there. Clicking on it will show the files in the app, which can be accessed and modified.</string>
+    <string name="launch_info">Launch the system Files app. This Files app is needed to access the patched app\'s files. Some phone manufacturers (like Xiaomi) hide this app from the launcher to promote their own file manager apps. After installing the patched app, open the system Files app, open the sidebar and you will see the app name there. Clicking on it will show the files in the app, which can be accessed and modified.\n If launching the app fails, try using a third party file manager which supports DocumentsProvider like <a href='https://f-droid.org/packages/com.ghostsq.commander/'>Ghost Commander</a></string>
 </resources>
