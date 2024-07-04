@@ -29,7 +29,7 @@ You could also patch the apk yourself by using [axml2xml](https://github.com/cod
 android:name="bin.mt.file.content.MTDataFilesProvider"
 android:permission="android.permission.MANAGE_DOCUMENTS"
 android:exported="true"
-android:authorities="com.andatsoft.myapk.fwa.MTDataFilesProvider"
+android:authorities="[PackageName].MTDataFilesProvider"
 android:grantUriPermissions="true">
 <intent-filter>
 <action
