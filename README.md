@@ -1,3 +1,7 @@
+# Note
+
+This app is outdated all features and more are available in [LSPatch](https://github.com/JingMatrix/LSPatch) or <a href="https://github.com/AbdurazaaqMohammed/MP-Manager">MP Manager</a>
+
 # InjectDocumentsProvider
 Access /Android/data and all data files of an Android app without any permissions by patching its APK file.
 
